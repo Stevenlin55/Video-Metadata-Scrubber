@@ -6,5 +6,5 @@ information. By scrubbing this metadata, the tool will contribute to safeguardin
 sharing or storing video content.
 
 ## How to Run
-1. Install FFmpeg from https://www.ffmpeg.org/download.html 
+1. Install FFmpeg from https://www.ffmpeg.org/download.html by following this guide: https://phoenixnap.com/kb/ffmpeg-windows
 2. Run `pip3 install ffmpeg-python`
