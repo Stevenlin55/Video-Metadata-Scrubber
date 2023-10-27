@@ -6,4 +6,5 @@ information. By scrubbing this metadata, the tool will contribute to safeguardin
 sharing or storing video content.
 
 ## How to Run
-1. Run `pip3 install ffmpeg-python`
+1. Install FFmpeg from https://www.ffmpeg.org/download.html 
+2. Run `pip3 install ffmpeg-python`
