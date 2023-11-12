@@ -1,10 +1,18 @@
 import subprocess
 import json
-import os
+import tkinter as tk
+from tkinter import filedialog
 
-# Attempted to use FFMPEG to remove metadata from video files, but it didn't work. because
+# I attempted to use FFMPEG to remove metadata from video files, but it didn't work. because
 # FFMPEG is unable to remove specific metadata fields from a video file. It can only remove
 # all metadata or copy metadata from a specific stream. 
+
+# Although FFMPEG can't remove specific metadata fields, it is still able to retain all the necessary 
+# metadata fields (e.g., video and audio streams) while removing all other metadata fields that are not
+# needed
+
+# My current code asks to select which metadata fields to remove, but it doesn't work, it just removes
+# all unnecessary metadata fields and keeps the necessary ones.
 
 def print_metadata_fields(metadata, current_field='', fields_list=[]):
     for key, value in metadata.items():
@@ -47,7 +55,7 @@ def remove_selected_metadata(input_video, fields_to_remove):
 
     # Save the output video with the same extension as the input video
     output_extension = input_video.split('.')[-1]
-    output_video = f"{input_video.rsplit('.', 1)[0]}_updated.{output_extension}"
+    output_video = f"{input_video.rsplit('.', 1)[0]}_scrubbed.{output_extension}"
     ffmpeg_command.append(output_video)
 
     subprocess.run(ffmpeg_command)
@@ -66,29 +74,21 @@ def print_video_metadata(video_file):
     print("Metadata of the output video:")
     print(json.dumps(metadata, indent=4))
 
+
+def choose_video_file():
+    root = tk.Tk()
+    root.withdraw()  # Hide the main window
+
+    file_path = filedialog.askopenfilename(title="Choose a Video File", filetypes=[("Video Files", "*.mp4 *.avi *.mkv *.mov *.flv *.wmv *.mpeg *.mpg")])
+
+    return file_path
+
 def main():
-    # List all input video files in the script's directory
-    script_directory = os.path.dirname(os.path.abspath(__file__))
-    input_files = [f for f in os.listdir(
-        script_directory) if f.endswith(('.mp4', '.mov'))]
-
-    print("Available input video files:")
-    for i, file in enumerate(input_files):
-        print(f"{i + 1}. {file}")
-
-    # Ask the user to choose an input file
-    selected_index = input(
-        "Enter the number of the input video file you want to process: ")
-    selected_index = int(selected_index)
-    if selected_index < 1 or selected_index > len(input_files):
-        print("Invalid selection. Please choose a valid number.")
-        return
-
-    selected_input_file = input_files[selected_index - 1]
+    input_video = choose_video_file()
 
     # Run ffprobe command and capture the output
     ffprobe_command = ["ffprobe", "-v", "quiet", "-print_format",
-                       "json", "-show_format", "-show_streams", selected_input_file]
+                       "json", "-show_format", "-show_streams", input_video]
     ffprobe_output = subprocess.check_output(
         ffprobe_command, stderr=subprocess.STDOUT, universal_newlines=True)
 
@@ -119,14 +119,10 @@ def main():
 
     # Remove selected metadata using FFmpeg
     output_video = remove_selected_metadata(
-        selected_input_file, fields_to_remove)
+        input_video, fields_to_remove)
 
     print(
         f"Selected metadata fields removed successfully. Output file: {output_video}")
-
-    # Print metadata of the output video
-    # print_video_metadata(output_video)
-
 
 if __name__ == "__main__":
     main()
