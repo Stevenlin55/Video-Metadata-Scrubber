@@ -3,17 +3,6 @@ import json
 import tkinter as tk
 from tkinter import filedialog
 
-# I attempted to use FFMPEG to remove metadata from video files, but it didn't work. because
-# FFMPEG is unable to remove specific metadata fields from a video file. It can only remove
-# all metadata or copy metadata from a specific stream. 
-
-# Although FFMPEG can't remove specific metadata fields, it is still able to retain all the necessary 
-# metadata fields (e.g., video and audio streams) while removing all other metadata fields that are not
-# needed
-
-# My current code asks to select which metadata fields to remove, but it doesn't work, it just removes
-# all unnecessary metadata fields and keeps the necessary ones.
-
 def print_metadata_fields(metadata, current_field='', fields_list=[]):
     for key, value in metadata.items():
         if isinstance(value, dict):
